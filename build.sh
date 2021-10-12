@@ -7,3 +7,4 @@ docker run --rm --privileged -v "$PWD:/build:z" \
     -e OUTPUT_DIR=work/wsl \
     -e BUILD_TYPE=wsl \
     almalinux/ks2rootfs
+    
