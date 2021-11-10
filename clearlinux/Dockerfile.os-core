@@ -10,17 +10,8 @@ RUN swupd update --no-boot-update $swupd_args
 RUN source /usr/lib/os-release \
     && mkdir /install_root \
     && swupd os-install \
-    -B containers-basic, \
-    binutils, \
-    which, \
-    cryptography, \
-    curl, \
-    make, \
-    jq,  \
-    make, \
-    iproute2, \
-    ethtool \
-   -V ${VERSION_ID} \
+    --bundles=containers-basic,binutils,which,cryptography,curl,make,q,make,iproute2 \
+    -V ${VERSION_ID} \
     --path /install_root --statedir /swupd-state \
     --bundles=os-core --no-boot-update
 
