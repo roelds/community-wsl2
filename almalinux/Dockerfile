@@ -24,7 +24,6 @@ RUN mkdir -p /mnt/sys-root; \
     less \
     libibverbs \
     libmetalink \
-    libmetalink \
     libnl3 \
     libpcap \
     libuser \
@@ -33,7 +32,6 @@ RUN mkdir -p /mnt/sys-root; \
     openssl \
     openssl-pkcs11 \
     passwd \
-    pciutils \
     pciutils \
     pciutils-libs \
     platform-python-pip \
@@ -57,8 +55,7 @@ RUN mkdir -p /mnt/sys-root; \
     which \
     xz \
     yum \
-    yum-utils \
-    ; \
+    yum-utils;\
     dnf --installroot /mnt/sys-root clean all; \
     rm -rf /mnt/sys-root/var/cache/* /mnt/sys-root/var/log/dnf* /mnt/sys-root/var/log/yum.*; \
     # cp /etc/yum.repos.d/*.repo /mnt/sys-root/etc/yum.repos.d/; \
@@ -75,7 +72,9 @@ FROM scratch
 
 COPY --from=system-build /mnt/sys-root/ /
 
-ENV LANG=C.utf8
+ENV LANG=C.utf8 
+
+LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
 
 RUN systemctl set-default multi-user.target; \
     systemctl mask systemd-remount-fs.service \
