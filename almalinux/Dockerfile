@@ -1,4 +1,6 @@
-FROM almalinux AS system-build
+ARG SYSBASE=almalinux
+
+FROM ${SYSBASE} AS system-build
 
 RUN mkdir -p /mnt/sys-root; \
     dnf install --installroot /mnt/sys-root --releasever 8 --setopt install_weak_deps=false --nodocs -y \
@@ -27,6 +29,7 @@ RUN mkdir -p /mnt/sys-root; \
     libnl3 \
     libpcap \
     libuser \
+    make \
     nano \    
     ncurses \
     openssl \
@@ -44,6 +47,7 @@ RUN mkdir -p /mnt/sys-root; \
     rdma-core \
     rootfiles \
     rpm-plugin-systemd-inhibit \
+    rsyslog \
     sudo \
     systemd \
     tar \
