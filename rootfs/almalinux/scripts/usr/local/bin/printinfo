@@ -3,10 +3,7 @@
 # Author: Bala Raman <srbala@gmail.com>
 # /usr/local/bin/printinfo
 #
-USER=`whoami`
-HOSTNAME=`uname -n`
 TCPU=`lscpu | grep "Model name" |  awk -F: '{print $2;}' | awk '{ sub(/^[ \t]+/, ""); print }'`
-TKERN=`uname -r`
 MEMORY1=`free -t -m | grep "Mem" | awk '{print $4" MB";}'`
 MEMORY2=`free -t -m | grep "Mem" | awk '{print $2" MB";}'`
 MEMORY3=`free -t -m | grep "Swap" | awk '{print $4" MB";}'`
@@ -41,21 +38,21 @@ echo "
             / _ \ | | '_ ' _ \ / _' | |   | | '_ \| | | \ \/ /  / _ \  
            / ___ \| | | | | | | (_| | |___| | | | | |_| |>  <  | (_) | 
           /_/   \_\_|_| |_| |_|\__,_|_____|_|_| |_|\__,_/_/\_\  \___/ 
-          
-Good $TIME $USER!"
+
+Good $TIME `whoami`!"
 
 echo "
-===========================================================================
- - Hostname............: $HOSTNAME
+===============================================================================
+ - Hostname............: `uname -n`
  - Release.............: `cat /etc/system-release`
-===========================================================================
- - Current user........: $USER
+===============================================================================
+ - Current user........: `whoami`
  - CPU Model...........: $TCPU
  - CPU usage...........: $LOAD1, $LOAD5, $LOAD15 (1, 5, 15 min)
  - Memory free/total...: $MEMORY1 / $MEMORY2
  - Swap free/total.....: $MEMORY3 / $MEMORY4
- - Kernel..............: $TKERN
+ - Kernel..............: `uname -r`
  - Processes...........: $PSA running
  - System uptime.......: $upDays days $upHours hours $upMins minutes $upSecs seconds
-===========================================================================
+===============================================================================
 "

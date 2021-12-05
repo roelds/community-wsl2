@@ -57,6 +57,7 @@ RUN mkdir -p /mnt/sys-root; \
     vim-minimal \
     virt-what \
     which \
+    wget \
     xz \
     yum \
     yum-utils;\
@@ -68,9 +69,11 @@ RUN mkdir -p /mnt/sys-root; \
     echo '%_install_langs C.utf8' > /mnt/sys-root//etc/rpm/macros.image-language-conf; \
     echo 'LANG="C.utf8"' >  /mnt/sys-root/etc/locale.conf; \
     echo 'container' > /mnt/sys-root/etc/dnf/vars/infra; \
+    echo 'PS1="[\033[01;32m]\u[\033[01;33m]@[\033[01;36m]\h[\033[00m]:[\033[01;34m]\w[\033[00m]$ "' >> /mnt/sys-root//etc/profile.d/sh.local; \
     rm -f /mnt/sys-root/etc/machine-id; \
     touch /mnt/sys-root/etc/machine-id;
 
+COPY scripts/ /mnt/sys-root/
 
 FROM scratch
 
