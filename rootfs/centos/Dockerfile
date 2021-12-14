@@ -74,13 +74,9 @@ RUN mkdir -p /mnt/sys-root; \
 
 COPY scripts/ /mnt/sys-root/
 
-FROM scratch
+FROM scratch AS system-build2
 
 COPY --from=system-build /mnt/sys-root/ /
-
-ENV LANG=C.utf8 
-
-LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
 
 RUN systemctl set-default multi-user.target; \
     systemctl mask systemd-remount-fs.service \
@@ -94,10 +90,22 @@ RUN systemctl set-default multi-user.target; \
     systemd-random-seed.service \
     systemd-machine-id-commit.service
 #
+
+FROM scratch 
+
+COPY --from=system-build2 / /
+
+ENV LANG=C.utf8 
+
+LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
+
 STOPSIGNAL SIGRTMIN+3
 #
 CMD ["/sbin/init"]
 #
-# build step: docker build --squash -t wsl-alma .
-# run step  : docker run --rm -it wsl-alma /bin/bash
+# build image step       : docker build --squash -t srbala/wsl:cenetos9-amd64 .
+# test & local run step  : docker run --rm -it srbala/wsl:cenetos9-amd64 /bin/bash
+#
+# build image step       : docker build --squash --platform linux/arm64 -t srbala/wsl:cenetos9-arm64 .
+# test & local run step  : docker run --rm -it srbala/wsl:cenetos9-arm64 /bin/bash
 #

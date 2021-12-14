@@ -69,19 +69,16 @@ RUN mkdir -p /mnt/sys-root; \
     echo '%_install_langs C.utf8' > /mnt/sys-root//etc/rpm/macros.image-language-conf; \
     echo 'LANG="C.utf8"' >  /mnt/sys-root/etc/locale.conf; \
     echo 'container' > /mnt/sys-root/etc/dnf/vars/infra; \
-    echo 'PS1="[\033[01;32m]\u[\033[01;33m]@[\033[01;36m]\h[\033[00m]:[\033[01;34m]\w[\033[00m]$ "' >> /mnt/sys-root//etc/profile.d/sh.local; \
+    echo 'PS1="\[\e[m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]\[\e[33m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[36m\]\w\[\e[m\]\[\e[m\]]\[\e[m\]\\$ "' >> /mnt/sys-root//etc/profile.d/sh.local; \
+    echo 'LANG="C.utf8"' >> /mnt/sys-root//etc/profile.d/sh.local; \
     rm -f /mnt/sys-root/etc/machine-id; \
     touch /mnt/sys-root/etc/machine-id;
 
 COPY scripts/ /mnt/sys-root/
 
-FROM scratch
+FROM scratch AS system-build2
 
 COPY --from=system-build /mnt/sys-root/ /
-
-ENV LANG=C.utf8 
-
-LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
 
 RUN systemctl set-default multi-user.target; \
     systemctl mask systemd-remount-fs.service \
@@ -95,10 +92,22 @@ RUN systemctl set-default multi-user.target; \
     systemd-random-seed.service \
     systemd-machine-id-commit.service
 #
+
+FROM scratch 
+
+COPY --from=system-build2 / /
+
+ENV LANG=C.utf8 
+
+LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
+
 STOPSIGNAL SIGRTMIN+3
 #
 CMD ["/sbin/init"]
 #
-# build step: docker build --squash -t wsl-alma .
-# run step  : docker run --rm -it wsl-alma /bin/bash
+# build image step       : docker build --squash -t srbala/wsl:alma-amd64 .
+# test & local run step  : docker run --rm -it srbala/wsl:alma-amd64 /bin/bash
+#
+# build image step       : docker build --squash --platform linux/arm64 -t srbala/wsl:alma-arm64 .
+# test & local run step  : docker run --rm -it srbala/wsl:alma-arm64 /bin/bash
 #

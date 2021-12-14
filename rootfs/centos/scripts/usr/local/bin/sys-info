@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Author: Bala Raman <srbala@gmail.com>
-# /usr/local/bin/printinfo
+# /usr/local/bin/sys-info
 #
 TCPU=`lscpu | grep "Model name" |  awk -F: '{print $2;}' | awk '{ sub(/^[ \t]+/, ""); print }'`
 MEMORY1=`free -t -m | grep "Mem" | awk '{print $4" MB";}'`
@@ -33,15 +33,7 @@ LOAD5=`cat /proc/loadavg | awk {'print $2'}`
 LOAD15=`cat /proc/loadavg | awk {'print $3'}`
 
 echo "
-   ____           _    ___  ____    ____  _                               ___  
-  / ___|___ _ __ | |_ / _ \/ ___|  / ___|| |_ _ __ ___  __ _ _ __ ___    / _ \ 
- | |   / _ \ '_ \| __| | | \___ \  \___ \| __| '__/ _ \/ _' | '_ ' _ \  | (_) | 
- | |__|  __/ | | | |_| |_| |___) |  ___) | |_| | |  __/ (_| | | | | | |  \__, | 
-  \____\___|_| |_|\__|\___/|____/  |____/ \__|_|  \___|\__,_|_| |_| |_|    /_/ 
-
-Good $TIME `whoami`!"
-
-echo "
+Good $TIME `whoami`!
 ===============================================================================
  - Hostname............: `uname -n`
  - Release.............: `cat /etc/system-release`
