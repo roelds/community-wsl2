@@ -1,4 +1,4 @@
-FROM clearlinux:latest AS builder
+FROM clearlinux:latest AS system-build
 
 ARG swupd_args
 
@@ -16,13 +16,10 @@ RUN source /usr/lib/os-release; \
     cd /install_root/etc; \
     ln -s ../usr/lib/os-release os-release
 
-FROM scratch
+FROM scratch AS system-build2
 #
-COPY --from=builder /install_root /
+COPY --from=system-build /install_root /
 #
-
-LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
-
 RUN systemctl set-default multi-user.target; \
     systemctl mask systemd-remount-fs.service \
     dev-hugepages.mount \
@@ -35,10 +32,17 @@ RUN systemctl set-default multi-user.target; \
     systemd-random-seed.service \
     systemd-machine-id-commit.service
 #
+
+FROM scratch
+#
+COPY --from=system-build . .
+#
+LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
+
 STOPSIGNAL SIGRTMIN+3
 #
 CMD ["/sbin/init"]
 #
-# build step: docker build --squash -t wsl-cl .
-# run step  : docker run --rm -it wsl-cl /bin/bash
+# build image step       : docker build --squash -t srbala/wsl:clearlinux .
+# test & local run step  : docker run --rm -it srbala/wsl:clearlinux /bin/bash
 #

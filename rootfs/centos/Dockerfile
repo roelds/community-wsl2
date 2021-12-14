@@ -93,7 +93,7 @@ RUN systemctl set-default multi-user.target; \
 
 FROM scratch 
 
-COPY --from=system-build2 / /
+COPY --from=system-build2 . .
 
 ENV LANG=C.utf8 
 
