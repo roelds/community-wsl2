@@ -9,7 +9,7 @@ RUN swupd update --no-boot-update $swupd_args
 RUN source /usr/lib/os-release; \
     kdir /install_root; \
     swupd os-install \
-    --bundles=os-core-plus,binutils,which,cryptography,curl,make,jq,tmux,procps-ng,less \
+    --bundles=os-core-plus,binutils,sysadmin-basic \
     -V ${VERSION_ID} \
     --path /install_root --statedir /swupd-state \
     --no-boot-update; \
