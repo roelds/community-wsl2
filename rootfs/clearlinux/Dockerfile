@@ -14,7 +14,8 @@ RUN source /usr/lib/os-release; \
     --path /install_root --statedir /swupd-state \
     --no-boot-update; \
     cd /install_root/etc; \
-    ln -s ../usr/lib/os-release os-release
+    ln -s ../usr/lib/os-release os-release; \
+    cat os-release | grep PRETTY_NAME | awk -F= '{print $2;}' | awk '{ gsub(/"/, ""); print }' > system-release ;
 
 FROM scratch AS system-build2
 #
