@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Author: Bala Raman <srbala@gmail.com>
+# 
+# Extract/Create RootFS image file from docker image
+# ./gen-rootfs image_name filename_subscript
+# 
 echo "Setting up temp work dir ..."
 mkdir -p wsl-temp && cd wsl-temp
 echo "Saving docker/container image ..."

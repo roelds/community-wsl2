@@ -1,27 +1,11 @@
-FROM clearlinux:latest AS system-build
-
-ARG swupd_args
+FROM clearlinux:latest AS builder
 
 # Move to latest Clear Linux release
-RUN swupd update --no-boot-update $swupd_args 
-# Install clean os-core bundle in target directory
-# using the new os version
-RUN source /usr/lib/os-release; \
-    kdir /install_root; \
-    swupd os-install \
-    --bundles=os-core-plus,binutils,sysadmin-basic \
-    -V ${VERSION_ID} \
-    --path /install_root --statedir /swupd-state \
-    --no-boot-update; \
-    cd /install_root/etc; \
-    ln -s ../usr/lib/os-release os-release; \
-    cat os-release | grep PRETTY_NAME | awk -F= '{print $2;}' | awk '{ gsub(/"/, ""); print }' > system-release ;
-
-FROM scratch AS system-build2
-#
-COPY --from=system-build /install_root /
-#
-RUN systemctl set-default multi-user.target; \
+RUN swupd update --no-boot-update; \
+    swupd bundle-add sysadmin-basic; 
+RUN swupd bundle-add binutils; \
+    swupd bundle-add jq; \
+    systemctl set-default multi-user.target; \
     systemctl mask systemd-remount-fs.service \
     dev-hugepages.mount \
     sys-fs-fuse-connections.mount \
@@ -33,17 +17,10 @@ RUN systemctl set-default multi-user.target; \
     systemd-random-seed.service \
     systemd-machine-id-commit.service
 #
-
+RUN cat /usr/lib/os-release | grep PRETTY_NAME | awk -F= '{print $2;}' | awk '{ gsub(/"/, ""); print }' > /etc/system-release ; 
+#
+COPY scripts/usr/local/ /usr/local
+#ß
 FROM scratch
-#
-COPY --from=system-build . .
-#
-LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
-
-STOPSIGNAL SIGRTMIN+3
-#
-CMD ["/sbin/init"]
-#
-# build image step       : docker build --squash -t srbala/wsl:clearlinux .
-# test & local run step  : docker run --rm -it srbala/wsl:clearlinux /bin/bash
-#
+COPY --from=builder / /
+CMD ["/bin/bash"]
