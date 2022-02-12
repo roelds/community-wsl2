@@ -73,8 +73,6 @@ RUN mkdir -p /mnt/sys-root; \
     rm -f /mnt/sys-root/etc/machine-id; \
     touch /mnt/sys-root/etc/machine-id;
 
-COPY scripts/ /mnt/sys-root/
-
 FROM scratch AS system-build2
 
 COPY --from=system-build /mnt/sys-root/ /
@@ -98,15 +96,14 @@ COPY --from=system-build2 . .
 
 ENV LANG=C.utf8 
 
-LABEL MAINTAINER="Bala Raman<srbala@gmail.com>"
-
 STOPSIGNAL SIGRTMIN+3
 #
 CMD ["/sbin/init"]
 #
-# build image step       : docker build --squash -t srbala/wsl:cenetos9-amd64 .
-# test & local run step  : docker run --rm -it srbala/wsl:cenetos9-amd64 /bin/bash
-#
-# build image step       : docker build --squash --platform linux/arm64 -t srbala/wsl:cenetos9-arm64 .
-# test & local run step  : docker run --rm -it srbala/wsl:cenetos9-arm64 /bin/bash
+# build image step       : docker build --squash -t mycentos9-amd64 .
+# test & local run step  : docker run --rm -it mycentos9-amd64 /bin/bash
+# export step            : docker save -o mycentos9-amd64.tar mycentos9-amd64
+# extract layer.tar from export
+# ren layer.tar rootfs.tar
+# add rootfs.tar to wsl
 #
